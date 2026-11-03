@@ -122,6 +122,184 @@
   .session-row{padding:11px 14px; background:var(--bg); border-radius:12px; margin-bottom:6px; font-size:0.92rem;}
   .session-row .d{color:var(--muted); font-size:0.85rem; font-weight:600;}
   hr.divider{border:none; border-top:1px solid var(--border); margin:16px 0;}
+
+  /* Options Box in Setup */
+  .options-box{
+    background:var(--bg); border:1px solid var(--border); border-radius:16px;
+    padding:16px; margin:16px 0 12px;
+  }
+  .options-header{
+    font-family:var(--font-heading); font-size:1.05rem; font-weight:700;
+    margin-bottom:12px; color:var(--text); display:flex; align-items:center; gap:6px;
+  }
+  .option-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 0; border-top:1px solid var(--border);
+  }
+  .options-box .option-row:first-of-type{ border-top:none; padding-top:0; }
+  .option-info{ display:flex; flex-direction:column; gap:2px; }
+  .option-title{ font-weight:700; font-size:0.95rem; }
+  .option-desc{ color:var(--muted); font-size:0.8rem; }
+  
+  /* Toggle Switch */
+  .toggle-switch{
+    position:relative; display:inline-block; width:44px; height:24px; flex-shrink:0;
+  }
+  .toggle-switch input{ opacity:0; width:0; height:0; margin:0; }
+  .slider{
+    position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0;
+    background-color:var(--border); transition:.25s ease; border-radius:24px;
+  }
+  .slider:before{
+    position:absolute; content:""; height:18px; width:18px; left:3px; bottom:3px;
+    background-color:#ffffff; transition:.25s ease; border-radius:50%;
+    box-shadow:0 1px 3px rgba(0,0,0,0.25);
+  }
+  .toggle-switch input:checked + .slider{ background-color:var(--accent2); }
+  .toggle-switch input:checked + .slider:before{ transform:translateX(20px); }
+
+  /* Subrow for layout selector */
+  .option-subrow{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:6px 0 8px 12px; border-top:1px dashed var(--border);
+  }
+  .option-subtitle{ font-size:0.85rem; font-weight:600; color:var(--muted); }
+  .btn-group{
+    display:flex; gap:3px; background:var(--card); padding:3px;
+    border-radius:10px; border:1px solid var(--border);
+  }
+  .btn-toggle{
+    background:transparent; color:var(--muted); padding:4px 10px;
+    font-size:0.8rem; font-weight:700; border-radius:7px; border:none; cursor:pointer;
+    transition:all .15s ease;
+  }
+  .btn-toggle.active{
+    background:var(--accent2); color:#fff; box-shadow:0 2px 6px rgba(79,124,255,0.25);
+  }
+
+  /* Virtual Keyboard */
+  .virtual-keyboard{
+    margin:14px 0 10px; background:var(--bg); border:1px solid var(--border);
+    border-radius:16px; padding:10px 8px; user-select:none; -webkit-user-select:none;
+    touch-action:manipulation; animation:fadeIn .2s ease;
+  }
+  .vk-header{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:0 2px 8px; border-bottom:1px solid var(--border); margin-bottom:8px;
+    font-size:0.82rem; font-weight:700; color:var(--muted);
+  }
+  .vk-controls{ display:flex; gap:5px; }
+  .vk-tool-btn{
+    background:var(--card); border:1px solid var(--border); color:var(--text);
+    padding:4px 8px; font-size:0.75rem; font-weight:700; border-radius:7px; cursor:pointer;
+    transition:background .15s ease;
+  }
+  .vk-tool-btn.active{
+    background:var(--accent2); color:#fff; border-color:var(--accent2);
+  }
+  .vk-row{ display:flex; justify-content:center; gap:4px; margin-bottom:5px; }
+  .vk-row:last-child{ margin-bottom:0; }
+  .vk-key{
+    flex:1; min-width:0; height:42px; padding:0; display:flex; align-items:center;
+    justify-content:center; background:var(--card); color:var(--text);
+    border:1px solid var(--border); border-bottom:3px solid var(--border);
+    border-radius:8px; font-family:var(--font-heading); font-size:1.15rem; font-weight:700;
+    cursor:pointer; transition:transform .06s ease, background .1s ease, border-color .1s ease;
+    touch-action:manipulation;
+  }
+  .vk-key:hover:not(:disabled){ border-color:var(--accent2); }
+  .vk-key:active:not(:disabled){
+    transform:translateY(2px); border-bottom-width:1px; background:var(--border);
+  }
+  .vk-key:disabled{ opacity:0.4; cursor:not-allowed; }
+  .vk-key.special{ font-family:var(--font-body); font-size:0.86rem; font-weight:800; }
+  .vk-key.key-backspace{
+    background:var(--bad-bg); color:var(--bad); flex:1.4;
+    border-color:rgba(230,72,58,0.25); border-bottom-color:rgba(230,72,58,0.45);
+  }
+  .vk-key.key-clear{ background:var(--bg); color:var(--muted); flex:1.2; }
+  .vk-key.key-space{ flex:3; font-size:0.82rem; color:var(--muted); }
+  .vk-key.key-check{
+    background:var(--accent); color:#fff; flex:1.6;
+    border-color:var(--accent-dark); border-bottom-color:var(--accent-dark);
+  }
+
+  /* FX Canvas & Animations */
+  #practiceCard{ position:relative; }
+  #fxCanvas{
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    pointer-events:none; z-index:90; border-radius:20px;
+  }
+  
+  /* Celebration and Error Animations */
+  .card-celebrate{
+    animation:cardCelebrate .6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes cardCelebrate{
+    0%{ transform:scale(1); }
+    35%{ transform:scale(1.03) translateY(-4px); }
+    65%{ transform:scale(0.99) translateY(2px); }
+    100%{ transform:scale(1) translateY(0); }
+  }
+
+  .input-correct-glow{
+    border-color:var(--good) !important;
+    box-shadow:0 0 0 5px rgba(34, 181, 115, 0.3) !important;
+    animation:pulseGreen .8s ease;
+  }
+  @keyframes pulseGreen{
+    0%{ box-shadow:0 0 0 0 rgba(34, 181, 115, 0.6); }
+    70%{ box-shadow:0 0 0 10px rgba(34, 181, 115, 0); }
+    100%{ box-shadow:0 0 0 5px rgba(34, 181, 115, 0.3); }
+  }
+
+  .card-shake{
+    animation:cardShake .55s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+  @keyframes cardShake{
+    10%, 90%{ transform:translateX(-4px) rotate(-0.5deg); }
+    20%, 80%{ transform:translateX(6px) rotate(0.8deg); }
+    30%, 50%, 70%{ transform:translateX(-6px) rotate(-0.8deg); }
+    40%, 60%{ transform:translateX(5px) rotate(0.5deg); }
+  }
+
+  .input-wrong-glow{
+    border-color:var(--bad) !important;
+    box-shadow:0 0 0 5px rgba(230, 72, 58, 0.3) !important;
+    animation:pulseRed .6s ease;
+  }
+  @keyframes pulseRed{
+    0%{ box-shadow:0 0 0 0 rgba(230, 72, 58, 0.6); }
+    70%{ box-shadow:0 0 0 10px rgba(230, 72, 58, 0); }
+    100%{ box-shadow:0 0 0 5px rgba(230, 72, 58, 0.3); }
+  }
+
+  .celebration-badge{
+    display:inline-block; font-size:2.2rem;
+    animation:badgePop .5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    margin-bottom:2px;
+  }
+  @keyframes badgePop{
+    0%{ transform:scale(0) rotate(-30deg); opacity:0; }
+    70%{ transform:scale(1.25) rotate(15deg); }
+    100%{ transform:scale(1) rotate(0); opacity:1; }
+  }
+
+  .diff-char{
+    display:inline-block; min-width:16px; padding:2px 4px; border-radius:6px;
+    margin:0 1px; animation:diffPop .35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .diff-char.match{
+    color:var(--good); background:var(--good-bg);
+  }
+  .diff-char.mismatch{
+    color:var(--bad); background:var(--bad-bg);
+    box-shadow:0 2px 6px rgba(230,72,58,0.18);
+  }
+  @keyframes diffPop{
+    0%{ transform:scale(0.3) translateY(8px); opacity:0; }
+    100%{ transform:scale(1) translateY(0); opacity:1; }
+  }
 </style>
 </head>
 <body>
@@ -149,6 +327,51 @@
     <input type="number" id="recallRepsInput" value="5" min="0" max="15">
     <div id="setupFeedback" class="msg-box error"></div>
 
+    <div class="options-box">
+      <div class="options-header">⚙️ Practice Options</div>
+      
+      <div class="option-row">
+        <div class="option-info">
+          <span class="option-title">⌨️ On-screen Keyboard</span>
+          <span class="option-desc">Virtual touch keyboard inside the app</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="optKeyboard" checked onchange="saveOptions()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="option-subrow" id="keyboardLayoutOption">
+        <span class="option-subtitle">Keyboard Layout:</span>
+        <div class="btn-group">
+          <button type="button" class="btn-toggle active" id="layoutQwerty" onclick="setKeyboardLayout('qwerty')">QWERTY</button>
+          <button type="button" class="btn-toggle" id="layoutAbc" onclick="setKeyboardLayout('abc')">A-B-C</button>
+        </div>
+      </div>
+
+      <div class="option-row">
+        <div class="option-info">
+          <span class="option-title">✨ Answer Animations</span>
+          <span class="option-desc">Celebrations, confetti & playful feedback</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="optAnimations" checked onchange="saveOptions()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="option-row">
+        <div class="option-info">
+          <span class="option-title">🔔 Sound Effects</span>
+          <span class="option-desc">Chimes for correct, gentle tones for tries</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="optSounds" checked onchange="saveOptions()">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
     <button class="btn-main" id="startBtn" onclick="startPractice()" disabled>Start Practice ▶</button>
     <button class="btn-main btn-secondary" style="margin-top:10px;" onclick="showDashboard()">📊 View Practice Report</button>
   </div>
@@ -164,6 +387,7 @@
   </div>
 
   <div class="card hidden" id="practiceCard">
+    <canvas id="fxCanvas"></canvas>
     <div class="progress-label" id="progressLabel"></div>
     <div class="streak-label" id="streakLabel"></div>
     <div class="stage-label" id="stageLabel"></div>
@@ -178,6 +402,7 @@
     <div class="feedback" id="feedback"></div>
     <div class="diff-row" id="diffRow"></div>
     <div class="correct-spelling" id="correctSpelling"></div>
+    <div id="virtualKeyboard" class="virtual-keyboard hidden"></div>
     <button class="btn-main" id="checkBtn" onclick="checkAnswer()">Check ✔</button>
     <button class="btn-main hidden" id="nextBtn" style="background:var(--accent2);" onclick="goToNext()">OK, Got It ➜</button>
   </div>
@@ -207,6 +432,228 @@ let streak = 0;
 let practiceWordList = []; // the list actually being practiced this run (may be subset)
 
 const MAX_WORDS = 10;
+
+let appOptions = {
+  keyboardEnabled: true,
+  keyboardLayout: 'qwerty', // 'qwerty' or 'abc'
+  animationsEnabled: true,
+  soundEnabled: true,
+  keyboardCaps: true
+};
+let vkCollapsed = false;
+let audioCtx = null;
+let confettiAnimationId = null;
+let lastVkTime = 0;
+
+function loadSavedOptions(){
+  try{
+    const raw = localStorage.getItem('spellingPracticeOptions');
+    if(raw){
+      const parsed = JSON.parse(raw);
+      appOptions = Object.assign(appOptions, parsed);
+    }
+  }catch(e){}
+  
+  const optKb = document.getElementById('optKeyboard');
+  const optAnim = document.getElementById('optAnimations');
+  const optSnd = document.getElementById('optSounds');
+  if(optKb) optKb.checked = appOptions.keyboardEnabled;
+  if(optAnim) optAnim.checked = appOptions.animationsEnabled;
+  if(optSnd) optSnd.checked = appOptions.soundEnabled;
+  updateLayoutBtnUI();
+  updateLayoutOptionVisibility();
+}
+
+function saveOptions(){
+  const optKb = document.getElementById('optKeyboard');
+  const optAnim = document.getElementById('optAnimations');
+  const optSnd = document.getElementById('optSounds');
+  if(optKb) appOptions.keyboardEnabled = optKb.checked;
+  if(optAnim) appOptions.animationsEnabled = optAnim.checked;
+  if(optSnd) appOptions.soundEnabled = optSnd.checked;
+  
+  try{
+    localStorage.setItem('spellingPracticeOptions', JSON.stringify(appOptions));
+  }catch(e){}
+  
+  updateLayoutOptionVisibility();
+  renderVirtualKeyboard();
+}
+
+function updateLayoutOptionVisibility(){
+  const sub = document.getElementById('keyboardLayoutOption');
+  if(sub){
+    sub.style.display = appOptions.keyboardEnabled ? 'flex' : 'none';
+  }
+}
+
+function setKeyboardLayout(layout){
+  appOptions.keyboardLayout = layout;
+  saveOptions();
+  updateLayoutBtnUI();
+  renderVirtualKeyboard();
+}
+
+function updateLayoutBtnUI(){
+  const qBtn = document.getElementById('layoutQwerty');
+  const aBtn = document.getElementById('layoutAbc');
+  if(qBtn && aBtn){
+    if(appOptions.keyboardLayout === 'abc'){
+      qBtn.classList.remove('active');
+      aBtn.classList.add('active');
+    } else {
+      qBtn.classList.add('active');
+      aBtn.classList.remove('active');
+    }
+  }
+}
+
+function getAudioContext(){
+  if(!audioCtx){
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if(AudioContextClass){
+      audioCtx = new AudioContextClass();
+    }
+  }
+  if(audioCtx && audioCtx.state === 'suspended'){
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function playWinSound(){
+  if(!appOptions.soundEnabled) return;
+  try{
+    const ctx = getAudioContext();
+    if(!ctx) return;
+    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    notes.forEach((freq, idx)=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      const startT = ctx.currentTime + idx * 0.07;
+      osc.frequency.setValueAtTime(freq, startT);
+      gain.gain.setValueAtTime(0.001, startT);
+      gain.gain.exponentialRampToValueAtTime(0.2, startT + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(startT);
+      osc.stop(startT + 0.28);
+    });
+  }catch(e){}
+}
+
+function playWrongSound(){
+  if(!appOptions.soundEnabled) return;
+  try{
+    const ctx = getAudioContext();
+    if(!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    const now = ctx.currentTime;
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.exponentialRampToValueAtTime(180, now + 0.28);
+    gain.gain.setValueAtTime(0.18, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.32);
+  }catch(e){}
+}
+
+function stopConfetti(){
+  if(confettiAnimationId){
+    cancelAnimationFrame(confettiAnimationId);
+    confettiAnimationId = null;
+  }
+  const canvas = document.getElementById('fxCanvas');
+  if(canvas){
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+}
+
+function triggerConfetti(){
+  if(!appOptions.animationsEnabled) return;
+  const canvas = document.getElementById('fxCanvas');
+  if(!canvas) return;
+  const card = document.getElementById('practiceCard');
+  canvas.width = card.offsetWidth;
+  canvas.height = card.offsetHeight;
+  const ctx = canvas.getContext('2d');
+  
+  const colors = ['#ff7a4d', '#4f7cff', '#22b573', '#ffd43b', '#ff6b6b', '#9775fa'];
+  const particles = [];
+  const particleCount = 45;
+  const originX = canvas.width / 2;
+  const originY = Math.min(canvas.height * 0.45, 180);
+
+  for(let i = 0; i < particleCount; i++){
+    const angle = (Math.PI * 2 * i) / particleCount + (Math.random() - 0.5);
+    const speed = 4 + Math.random() * 6;
+    particles.push({
+      x: originX,
+      y: originY,
+      vx: Math.cos(angle) * speed * (0.8 + Math.random() * 0.4),
+      vy: Math.sin(angle) * speed - (2 + Math.random() * 3),
+      size: 5 + Math.random() * 6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      vRot: (Math.random() - 0.5) * 12,
+      opacity: 1,
+      shape: Math.random() > 0.4 ? 'rect' : 'star'
+    });
+  }
+
+  stopConfetti();
+
+  function render(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.22;
+      p.vx *= 0.98;
+      p.rotation += p.vRot;
+      p.opacity -= 0.018;
+
+      if(p.opacity > 0 && p.y < canvas.height){
+        alive = true;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+
+        if(p.shape === 'rect'){
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        } else {
+          ctx.beginPath();
+          for(let s = 0; s < 4; s++){
+            ctx.lineTo(Math.cos(s * Math.PI / 2) * p.size, Math.sin(s * Math.PI / 2) * p.size);
+            ctx.lineTo(Math.cos(s * Math.PI / 2 + Math.PI / 4) * (p.size * 0.35), Math.sin(s * Math.PI / 2 + Math.PI / 4) * (p.size * 0.35));
+          }
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    });
+
+    if(alive){
+      confettiAnimationId = requestAnimationFrame(render);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiAnimationId = null;
+    }
+  }
+
+  render();
+}
 
 function showMsg(el, text){
   el.textContent = text;
@@ -353,9 +800,15 @@ function shouldShowHint(){
 function loadAttempt(){
   isChecking = false;
   lastTypedValue = '';
+  stopConfetti();
+  const practiceCard = document.getElementById('practiceCard');
+  const answerInput = document.getElementById('answerInput');
+  if(practiceCard) practiceCard.classList.remove('card-celebrate', 'card-shake');
+  if(answerInput) answerInput.classList.remove('input-correct-glow', 'input-wrong-glow');
+
   document.getElementById('checkBtn').classList.remove('hidden');
   document.getElementById('nextBtn').classList.add('hidden');
-  document.getElementById('answerInput').value = '';
+  answerInput.value = '';
   document.getElementById('feedback').textContent = '';
   document.getElementById('feedback').className = 'feedback';
   document.getElementById('diffRow').innerHTML = '';
@@ -385,8 +838,9 @@ function loadAttempt(){
     instructionText.textContent = 'Listen to the sound, then type it without looking';
   }
   renderDots();
+  renderVirtualKeyboard();
   setTimeout(()=>speak(word), 300);
-  document.getElementById('answerInput').focus();
+  answerInput.focus();
 }
 
 function renderDots(){
@@ -437,8 +891,14 @@ function buildDiffHTML(target, attempt){
   for(let i=0;i<maxLen;i++){
     const a = attempt[i] || '_';
     const match = attempt[i] && target[i] && attempt[i].toLowerCase() === target[i].toLowerCase();
-    const color = match ? 'var(--good)' : 'var(--bad)';
-    html += `<span style="color:${color};">${a}</span>`;
+    if(appOptions.animationsEnabled){
+      const cls = match ? 'diff-char match' : 'diff-char mismatch';
+      const delay = (i * 0.05).toFixed(2);
+      html += `<span class="${cls}" style="animation-delay:${delay}s;">${a}</span>`;
+    } else {
+      const color = match ? 'var(--good)' : 'var(--bad)';
+      html += `<span style="color:${color};">${a}</span>`;
+    }
   }
   return html;
 }
@@ -447,14 +907,15 @@ let isChecking = false;
 
 function checkAnswer(){
   if(isChecking) return;
-  const val = document.getElementById('answerInput').value.trim();
+  const answerInput = document.getElementById('answerInput');
+  const val = answerInput.value.trim();
   const fb = document.getElementById('feedback');
   if(val === ''){
     fb.textContent = '✏️ Please type something first!';
     fb.className = 'feedback bad';
     document.getElementById('diffRow').innerHTML = '';
     document.getElementById('correctSpelling').textContent = '';
-    document.getElementById('answerInput').focus();
+    answerInput.focus();
     return;
   }
   isChecking = true;
@@ -462,28 +923,53 @@ function checkAnswer(){
   const correct = val.toLowerCase() === target.toLowerCase();
   const diffRow = document.getElementById('diffRow');
   const correctSpelling = document.getElementById('correctSpelling');
+  const practiceCard = document.getElementById('practiceCard');
   const hist = currentAttemptsForWord();
   hist[attemptIdx] = correct;
+
+  practiceCard.classList.remove('card-celebrate', 'card-shake');
+  answerInput.classList.remove('input-correct-glow', 'input-wrong-glow');
+  void practiceCard.offsetWidth;
+
   if(correct){
     results[target].good++;
     streak++;
     const msgs = ['✔ Correct!', '🎉 Great job!', '🌟 Super!', '🔥 On fire!', '👏 Wonderful!'];
-    fb.textContent = streak >= 3 ? msgs[Math.min(streak-1, msgs.length-1)] : msgs[0];
+    const msg = streak >= 3 ? msgs[Math.min(streak-1, msgs.length-1)] : msgs[0];
+    
+    if(appOptions.animationsEnabled){
+      practiceCard.classList.add('card-celebrate');
+      answerInput.classList.add('input-correct-glow');
+      triggerConfetti();
+      const badge = streak >= 5 ? '🏆' : (streak >= 3 ? '🔥' : '🎉');
+      fb.innerHTML = `<span class="celebration-badge">${badge}</span><div>${msg}</div>`;
+    } else {
+      fb.textContent = msg;
+    }
     fb.className = 'feedback good';
     diffRow.innerHTML = '';
     correctSpelling.textContent = '';
     updateStreakLabel();
     renderDots();
-    setTimeout(nextStep, 1000);
+    playWinSound();
+    setTimeout(nextStep, appOptions.animationsEnabled ? 1300 : 1000);
   } else {
     results[target].bad++;
     streak = 0;
-    fb.textContent = '✘ Not quite — here\'s the difference:';
+    
+    if(appOptions.animationsEnabled){
+      practiceCard.classList.add('card-shake');
+      answerInput.classList.add('input-wrong-glow');
+      fb.innerHTML = `<span style="display:inline-block; font-size:1.8rem; margin-bottom:2px; animation:badgePop .4s ease;">❌</span><div>Not quite — here's the difference:</div>`;
+    } else {
+      fb.textContent = '✘ Not quite — here\'s the difference:';
+    }
     fb.className = 'feedback bad';
     diffRow.innerHTML = buildDiffHTML(target, val);
     correctSpelling.textContent = `Correct spelling: ${target}`;
     updateStreakLabel();
     renderDots();
+    playWrongSound();
     document.getElementById('checkBtn').classList.add('hidden');
     document.getElementById('nextBtn').classList.remove('hidden');
   }
@@ -630,9 +1116,132 @@ function renderDashboard(){
 }
 
 function resetAll(){
+  stopConfetti();
   document.getElementById('doneCard').classList.add('hidden');
   document.getElementById('setupCard').classList.remove('hidden');
   document.getElementById('answerInput').value='';
+}
+
+function toggleVkCollapse(){
+  vkCollapsed = !vkCollapsed;
+  renderVirtualKeyboard();
+}
+
+function toggleVkCaps(){
+  appOptions.keyboardCaps = !appOptions.keyboardCaps;
+  saveOptions();
+  renderVirtualKeyboard();
+}
+
+function toggleVkLayout(){
+  appOptions.keyboardLayout = (appOptions.keyboardLayout === 'qwerty') ? 'abc' : 'qwerty';
+  saveOptions();
+  updateLayoutBtnUI();
+  renderVirtualKeyboard();
+}
+
+function handleVkChar(ch){
+  if(isChecking) return;
+  const inp = document.getElementById('answerInput');
+  const start = inp.selectionStart != null ? inp.selectionStart : inp.value.length;
+  const end = inp.selectionEnd != null ? inp.selectionEnd : inp.value.length;
+  const val = inp.value;
+  inp.value = val.slice(0, start) + ch + val.slice(end);
+  inp.selectionStart = inp.selectionEnd = start + ch.length;
+  lastTypedValue = inp.value;
+  if(ch.trim() !== ''){
+    speakTypedLetter(ch);
+  }
+}
+
+function handleVkBackspace(){
+  if(isChecking) return;
+  const inp = document.getElementById('answerInput');
+  const start = inp.selectionStart != null ? inp.selectionStart : inp.value.length;
+  const end = inp.selectionEnd != null ? inp.selectionEnd : inp.value.length;
+  const val = inp.value;
+  if(start !== end){
+    inp.value = val.slice(0, start) + val.slice(end);
+    inp.selectionStart = inp.selectionEnd = start;
+  } else if(start > 0){
+    inp.value = val.slice(0, start - 1) + val.slice(start);
+    inp.selectionStart = inp.selectionEnd = start - 1;
+  }
+  lastTypedValue = inp.value;
+}
+
+function handleVkClear(){
+  if(isChecking) return;
+  const inp = document.getElementById('answerInput');
+  inp.value = '';
+  lastTypedValue = '';
+}
+
+function renderVirtualKeyboard(){
+  const vk = document.getElementById('virtualKeyboard');
+  if(!vk) return;
+  
+  if(!appOptions.keyboardEnabled){
+    vk.classList.add('hidden');
+    return;
+  }
+  vk.classList.remove('hidden');
+
+  const isQwerty = appOptions.keyboardLayout !== 'abc';
+  const isCaps = !!appOptions.keyboardCaps;
+
+  let headerHTML = `
+    <div class="vk-header">
+      <span>⌨️ ${isQwerty ? 'QWERTY' : 'ABC'} Keyboard</span>
+      <div class="vk-controls">
+        <button type="button" class="vk-tool-btn ${isCaps ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="toggleVkCaps()">${isCaps ? 'aA (Caps)' : 'aa'}</button>
+        <button type="button" class="vk-tool-btn" onmousedown="event.preventDefault();" onclick="toggleVkLayout()">${isQwerty ? 'Switch: ABC' : 'Switch: QWERTY'}</button>
+        <button type="button" class="vk-tool-btn" onmousedown="event.preventDefault();" onclick="toggleVkCollapse()">${vkCollapsed ? 'Show ▴' : 'Hide ▾'}</button>
+      </div>
+    </div>
+  `;
+
+  if(vkCollapsed){
+    vk.innerHTML = headerHTML;
+    return;
+  }
+
+  let letterRows = [];
+  if(isQwerty){
+    letterRows = [
+      ['Q','W','E','R','T','Y','U','I','O','P'],
+      ['A','S','D','F','G','H','J','K','L'],
+      ['Z','X','C','V','B','N','M']
+    ];
+  } else {
+    letterRows = [
+      ['A','B','C','D','E','F','G'],
+      ['H','I','J','K','L','M','N'],
+      ['O','P','Q','R','S','T','U'],
+      ['V','W','X','Y','Z']
+    ];
+  }
+
+  let bodyHTML = '';
+  letterRows.forEach(r => {
+    bodyHTML += '<div class="vk-row">';
+    r.forEach(k => {
+      const displayChar = isCaps ? k.toUpperCase() : k.toLowerCase();
+      bodyHTML += `<button type="button" class="vk-key" onmousedown="event.preventDefault();" onclick="handleVkChar('${displayChar}');">${displayChar}</button>`;
+    });
+    bodyHTML += '</div>';
+  });
+
+  // Action row (Clear, Space, Backspace)
+  bodyHTML += `
+    <div class="vk-row" style="margin-top:6px;">
+      <button type="button" class="vk-key special key-clear" onmousedown="event.preventDefault();" onclick="handleVkClear();" title="Clear input">🧹 Clear</button>
+      <button type="button" class="vk-key special key-space" onmousedown="event.preventDefault();" onclick="handleVkChar(' ');">␣ Space</button>
+      <button type="button" class="vk-key special key-backspace" onmousedown="event.preventDefault();" onclick="handleVkBackspace();" title="Backspace">⌫ Delete</button>
+    </div>
+  `;
+
+  vk.innerHTML = headerHTML + bodyHTML;
 }
 
 let lastTypedValue = '';
@@ -659,6 +1268,10 @@ document.getElementById('answerInput').addEventListener('input', function(e){
 document.getElementById('answerInput')?.addEventListener?.('keydown', function(e){
   if(e.key === 'Enter'){ e.preventDefault(); checkAnswer(); }
 });
+
+// Initial load
+loadSavedOptions();
+updateLayoutOptionVisibility();
 </script>
 </body>
 </html>
