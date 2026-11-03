@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spelling Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f3ee; --card:#ffffff; --text:#26282b; --accent:#ff7a4d;
+    --accent-dark:#e8632f; --accent2:#4f7cff; --accent2-dark:#3d63e0;
+    --good:#22b573; --good-bg:#e6f9f0; --bad:#e6483a; --bad-bg:#fdeceb;
+    --muted:#8a8f98; --border:#e6e2d8; --font-heading:'Baloo 2',sans-serif;
+    --font-body:'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1b1d22; --card:#25282f; --text:#eef0f3; --accent:#ff8a5d;
+      --accent-dark:#ff7a4d; --accent2:#7c9bff; --accent2-dark:#6a8dff;
+      --good:#3ecf8e; --good-bg:#173026; --bad:#ff6b5e; --bad-bg:#3a2020;
+      --muted:#a3a8b0; --border:#383c45;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1b1d22; --card:#25282f; --text:#eef0f3; --accent:#ff8a5d;
+    --accent-dark:#ff7a4d; --accent2:#7c9bff; --accent2-dark:#6a8dff;
+    --good:#3ecf8e; --good-bg:#173026; --bad:#ff6b5e; --bad-bg:#3a2020;
+    --muted:#a3a8b0; --border:#383c45;
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--font-body);
+    min-height:100%;
+    display:flex; justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{width:100%; max-width:480px; padding:24px 16px 48px;}
+  .brand{display:flex; align-items:center; justify-content:center; gap:8px; margin:6px 0 2px;}
+  .brand-badge{
+    width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  }
+  h1{font-family:var(--font-heading); font-size:1.5rem; text-align:center; margin:0; letter-spacing:0.2px;}
+  p.sub{text-align:center; color:var(--muted); margin:6px 0 22px; font-size:0.95rem;}
+  .card{
+    background:var(--card); border-radius:20px; padding:22px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.05), 0 12px 28px rgba(0,0,0,0.06);
+    margin-bottom:16px; border:1px solid var(--border);
+    animation:fadeIn .25s ease;
+  }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  label{font-weight:700; display:block; margin-bottom:6px; font-size:0.95rem;}
+  .field-hint{color:var(--muted); font-size:0.82rem; margin:-2px 0 8px;}
+  input[type=text], input[type=number]{
+    width:100%; padding:13px 14px; border-radius:12px; border:2px solid var(--border);
+    font-size:1.05rem; background:transparent; color:var(--text); font-family:var(--font-body);
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  input[type=text]:focus, input[type=number]:focus{
+    outline:none; border-color:var(--accent2); box-shadow:0 0 0 4px rgba(79,124,255,0.12);
+  }
+  .row{display:flex; gap:8px; margin-bottom:6px;}
+  .row input{flex:1;}
+  button{
+    border:none; border-radius:12px; padding:13px 18px; font-size:1rem; font-weight:800;
+    cursor:pointer; color:#fff; font-family:var(--font-body);
+    transition:transform .08s ease, opacity .15s ease, box-shadow .15s ease;
+  }
+  button:active{transform:scale(0.97);}
+  button:disabled{opacity:0.45; cursor:not-allowed; transform:none;}
+  .btn-add{background:var(--accent2); box-shadow:0 3px 8px rgba(79,124,255,0.3); padding:13px 20px;}
+  .btn-add:hover:not(:disabled){background:var(--accent2-dark);}
+  .btn-main{background:var(--accent); width:100%; font-size:1.1rem; padding:15px; margin-top:8px; box-shadow:0 4px 12px rgba(255,122,77,0.3);}
+  .btn-main:hover:not(:disabled){background:var(--accent-dark);}
+  .btn-secondary{background:var(--accent2); box-shadow:0 4px 12px rgba(79,124,255,0.25);}
+  .btn-secondary:hover:not(:disabled){background:var(--accent2-dark);}
+  .btn-danger{background:var(--bad); box-shadow:0 4px 12px rgba(230,72,58,0.25);}
+  .btn-outline{background:var(--card); color:var(--text); border:2px solid var(--border); box-shadow:none;}
+  .btn-outline:hover:not(:disabled){border-color:var(--accent2); color:var(--accent2);}
+  ul#wordList{list-style:none; padding:0; margin:8px 0 16px;}
+  ul#wordList li{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:11px 14px; background:var(--bg); border-radius:12px; margin-bottom:6px; font-size:1.05rem;
+    font-weight:600; animation:fadeIn .2s ease;
+  }
+  ul#wordList li button{background:transparent; color:var(--bad); padding:4px 8px; font-size:0.85rem; box-shadow:none;}
+  .word-count{color:var(--muted); font-size:0.82rem; text-align:right; margin-bottom:10px;}
+  .hidden{display:none;}
+  .section-title{font-family:var(--font-heading); font-size:1.15rem; margin:0 0 10px; text-align:center;}
+  .practice-word{font-family:var(--font-heading); font-size:2rem; text-align:center; letter-spacing:3px; margin:10px 0; font-weight:700; color:var(--accent); min-height:2.4rem;}
+  .dots{display:flex; justify-content:center; gap:6px; margin:12px 0 18px; flex-wrap:wrap;}
+  .dot{width:13px; height:13px; border-radius:50%; background:var(--border); transition:background .2s ease, transform .2s ease;}
+  .dot.done-good{background:var(--good); transform:scale(1.15);}
+  .dot.done-bad{background:var(--bad); transform:scale(1.15);}
+  .feedback{text-align:center; font-size:1.15rem; font-weight:800; min-height:30px; margin:6px 0;}
+  .feedback.good{color:var(--good);}
+  .feedback.bad{color:var(--bad);}
+  .msg-box{
+    display:none; padding:10px 14px; border-radius:12px; font-size:0.92rem; font-weight:700;
+    text-align:center; margin:2px 0 10px; animation:fadeIn .2s ease;
+  }
+  .msg-box.error{background:var(--bad-bg); color:var(--bad);}
+  .speak-btn{background:var(--accent2); width:58px; height:58px; border-radius:50%; font-size:1.4rem; box-shadow:0 4px 12px rgba(79,124,255,0.3);}
+  .center{text-align:center;}
+  .score{font-family:var(--font-heading); font-size:1.5rem; font-weight:700; text-align:center; margin:6px 0 14px;}
+  .progress-label{text-align:center; color:var(--muted); margin-bottom:2px; font-size:0.88rem; font-weight:600;}
+  .stage-label{text-align:center; font-weight:800; margin-bottom:10px; font-size:1rem; color:var(--accent2);}
+  .streak-label{text-align:center; font-size:1.05rem; margin-bottom:4px; min-height:22px; font-weight:700;}
+  .diff-row{text-align:center; font-size:1.7rem; margin:8px 0; letter-spacing:4px; font-family:var(--font-heading);}
+  .correct-spelling{text-align:center; color:var(--muted); font-size:0.98rem; margin-top:2px; font-weight:600;}
+  .weak-word-btn{margin-top:10px;}
+  .report-row{display:flex; justify-content:space-between; align-items:center; padding:11px 14px; background:var(--bg); border-radius:12px; margin-bottom:6px;}
+  .report-row .w{font-weight:700;}
+  .report-row .pct{font-weight:800;}
+  .session-row{padding:11px 14px; background:var(--bg); border-radius:12px; margin-bottom:6px; font-size:0.92rem;}
+  .session-row .d{color:var(--muted); font-size:0.85rem; font-weight:600;}
+  hr.divider{border:none; border-top:1px solid var(--border); margin:16px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><div class="brand-badge">📝</div></div>
+  <h1>Spelling Practice</h1>
+  <p class="sub">Add words, listen, and practice spelling them from memory</p>
+
+  <div class="card" id="setupCard">
+    <label>Add a word</label>
+    <div class="row">
+      <input type="text" id="wordInput" placeholder="e.g. banana" autocomplete="off" maxlength="20">
+      <button class="btn-add" onclick="addWord()">Add</button>
+    </div>
+    <div id="wordFeedback" class="msg-box error"></div>
+    <ul id="wordList"></ul>
+    <div class="word-count" id="wordCount"></div>
+
+    <label>👀 Look & Write — how many times</label>
+    <p class="field-hint">Child sees the word and copies it</p>
+    <input type="number" id="lookRepsInput" value="5" min="0" max="15">
+
+    <label style="margin-top:14px;">🧠 Write from Memory — how many times</label>
+    <p class="field-hint">Word is hidden, only the sound plays</p>
+    <input type="number" id="recallRepsInput" value="5" min="0" max="15">
+    <div id="setupFeedback" class="msg-box error"></div>
+
+    <button class="btn-main" id="startBtn" onclick="startPractice()" disabled>Start Practice ▶</button>
+    <button class="btn-main btn-secondary" style="margin-top:10px;" onclick="showDashboard()">📊 View Practice Report</button>
+  </div>
+
+  <div class="card hidden" id="dashboardCard">
+    <h2 class="section-title">📊 Practice Report</h2>
+    <div id="dashboardOverview" class="center" style="margin-bottom:16px;"></div>
+    <div id="dashboardWords"></div>
+    <div id="dashboardSessions" style="margin-top:16px;"></div>
+    <hr class="divider">
+    <button class="btn-main btn-danger" onclick="clearHistory()">🗑 Clear Report</button>
+    <button class="btn-main btn-outline" style="margin-top:10px;" onclick="hideDashboard()">⬅ Back</button>
+  </div>
+
+  <div class="card hidden" id="practiceCard">
+    <div class="progress-label" id="progressLabel"></div>
+    <div class="streak-label" id="streakLabel"></div>
+    <div class="stage-label" id="stageLabel"></div>
+    <div class="dots" id="dots"></div>
+    <div class="practice-word" id="wordDisplay"></div>
+    <div style="display:flex; justify-content:center; gap:12px; margin-bottom:14px;">
+      <button class="speak-btn" style="margin:0;" onclick="speakCurrent()">🔊</button>
+      <button class="speak-btn" style="margin:0; background:var(--accent);" onclick="speakSpelled()">🔤</button>
+    </div>
+    <p class="center" id="instructionText" style="color:var(--muted); margin:0 0 10px;"></p>
+    <input type="text" id="answerInput" placeholder="Type here..." autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div class="feedback" id="feedback"></div>
+    <div class="diff-row" id="diffRow"></div>
+    <div class="correct-spelling" id="correctSpelling"></div>
+    <button class="btn-main" id="checkBtn" onclick="checkAnswer()">Check ✔</button>
+    <button class="btn-main hidden" id="nextBtn" style="background:var(--accent2);" onclick="goToNext()">OK, Got It ➜</button>
+  </div>
+
+  <div class="card hidden" id="doneCard">
+    <div class="score" id="finalScore"></div>
+    <p class="center" id="reviewList"></p>
+    <div id="weakWordsSection" class="hidden">
+      <p class="center" style="color:var(--muted); margin-bottom:4px;">These need a bit more practice:</p>
+      <p class="center" id="weakWordsList" style="font-weight:700; font-size:1.05rem;"></p>
+      <button class="btn-main weak-word-btn" onclick="startPracticeWeak()">Practice These Again 🎯</button>
+    </div>
+    <button class="btn-main" onclick="resetAll()">Practice All Again 🔁</button>
+    <button class="btn-main btn-secondary" style="margin-top:10px;" onclick="showDashboardFromDone()">📊 View Practice Report</button>
+  </div>
+</div>
+
+<script>
+let words = [];
+let lookReps = 5;
+let recallReps = 5;
+let totalReps = 10;
+let wordIdx = 0;
+let attemptIdx = 0;
+let results = {}; // word -> {good, bad}
+let streak = 0;
+let practiceWordList = []; // the list actually being practiced this run (may be subset)
+
+const MAX_WORDS = 10;
+
+function showMsg(el, text){
+  el.textContent = text;
+  el.style.display = 'block';
+}
+function hideMsg(el){
+  el.textContent = '';
+  el.style.display = 'none';
+}
+
+function addWord(){
+  const inp = document.getElementById('wordInput');
+  const fb = document.getElementById('wordFeedback');
+  const val = inp.value.trim();
+  hideMsg(fb);
+  if(val === ''){
+    showMsg(fb, '✏️ Please type a word first!');
+    inp.focus();
+    return;
+  }
+  if(!/^[a-zA-Z]+$/.test(val)){
+    showMsg(fb, '⚠️ Please use only letters (a-z), no numbers or symbols.');
+    inp.focus();
+    return;
+  }
+  if(words.some(w => w.toLowerCase() === val.toLowerCase())){
+    showMsg(fb, `⚠️ "${val}" is already in the list.`);
+    inp.focus();
+    return;
+  }
+  if(words.length >= MAX_WORDS){
+    showMsg(fb, `⚠️ You can add up to ${MAX_WORDS} words at a time.`);
+    return;
+  }
+  words.push(val);
+  inp.value = '';
+  renderWordList();
+  inp.focus();
+}
+
+function removeWord(i){
+  words.splice(i,1);
+  renderWordList();
+}
+
+function renderWordList(){
+  const ul = document.getElementById('wordList');
+  ul.innerHTML = '';
+  words.forEach((w,i)=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${w}</span>`;
+    const btn = document.createElement('button');
+    btn.textContent = '✕ Remove';
+    btn.onclick = ()=>removeWord(i);
+    li.appendChild(btn);
+    ul.appendChild(li);
+  });
+  document.getElementById('wordCount').textContent = `${words.length} / ${MAX_WORDS} words added`;
+  document.getElementById('startBtn').disabled = (words.length === 0);
+  const addBtn = document.querySelector('.btn-add');
+  if(addBtn) addBtn.disabled = (words.length >= MAX_WORDS);
+}
+
+document.getElementById('wordInput').addEventListener('keydown', e=>{
+  if(e.key === 'Enter'){ e.preventDefault(); addWord(); }
+});
+renderWordList();
+
+function speak(text){
+  try{
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.85;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  }catch(e){ /* speech not supported, silently ignore */ }
+}
+
+function startPractice(){
+  const setupFb = document.getElementById('setupFeedback');
+  hideMsg(setupFb);
+  if(words.length === 0){ showMsg(setupFb, '✏️ Please add at least one word first!'); return; }
+  practiceWordList = words.slice();
+  const lookInput = document.getElementById('lookRepsInput');
+  const recallInput = document.getElementById('recallRepsInput');
+  lookReps = clampReps(parseInt(lookInput.value));
+  recallReps = clampReps(parseInt(recallInput.value));
+  lookInput.value = lookReps;
+  recallInput.value = recallReps;
+  totalReps = lookReps + recallReps;
+  if(totalReps === 0){ showMsg(setupFb, '⚠️ Please set at least one practice round (Look & Write or Write from Memory).'); return; }
+  beginRun();
+}
+
+function clampReps(n){
+  if(isNaN(n) || n < 0) return 0;
+  if(n > 15) return 15;
+  return n;
+}
+
+function startPracticeWeak(){
+  practiceWordList = words.filter(w => results[w] && results[w].bad > 0);
+  if(practiceWordList.length === 0){ practiceWordList = words.slice(); }
+  beginRun();
+}
+
+function beginRun(){
+  wordIdx = 0; attemptIdx = 0; streak = 0; results = {}; attemptHistory = {};
+  practiceWordList.forEach(w => results[w] = {good:0, bad:0});
+  document.getElementById('setupCard').classList.add('hidden');
+  document.getElementById('doneCard').classList.add('hidden');
+  document.getElementById('practiceCard').classList.remove('hidden');
+  updateStreakLabel();
+  loadAttempt();
+}
+
+function isLookPhase(){
+  return attemptIdx < lookReps;
+}
+
+function updateStreakLabel(){
+  const lbl = document.getElementById('streakLabel');
+  if(streak >= 2){
+    lbl.textContent = '⭐'.repeat(Math.min(streak,10)) + ` ${streak} in a row!`;
+  } else {
+    lbl.textContent = '';
+  }
+}
+
+function rainbowHTML(word){
+  const colors = ['#ff6b6b','#ffa94d','#ffd43b','#51cf66','#4dabf7','#9775fa','#f783ac'];
+  return word.split('').map((c,i)=>`<span style="color:${colors[i%colors.length]}">${c}</span>`).join('');
+}
+
+function shouldShowHint(){
+  if(isLookPhase()) return false;
+  const hist = currentAttemptsForWord();
+  for(let i=lookReps; i<attemptIdx; i++){
+    if(hist[i] === false) return true;
+  }
+  return false;
+}
+
+function loadAttempt(){
+  isChecking = false;
+  lastTypedValue = '';
+  document.getElementById('checkBtn').classList.remove('hidden');
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.getElementById('answerInput').value = '';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('diffRow').innerHTML = '';
+  document.getElementById('correctSpelling').textContent = '';
+  const phaseNum = isLookPhase() ? (attemptIdx+1) : (attemptIdx - lookReps + 1);
+  const phaseTotal = isLookPhase() ? lookReps : recallReps;
+  document.getElementById('progressLabel').textContent =
+    `Word ${wordIdx+1} of ${practiceWordList.length} — round ${attemptIdx+1} of ${totalReps}`;
+  const stageLabel = document.getElementById('stageLabel');
+  const wordDisplay = document.getElementById('wordDisplay');
+  const instructionText = document.getElementById('instructionText');
+  const word = practiceWordList[wordIdx];
+  if(isLookPhase()){
+    stageLabel.textContent = `👀 Look & Write (${phaseNum}/${phaseTotal})`;
+    wordDisplay.innerHTML = rainbowHTML(word);
+    wordDisplay.style.visibility = 'visible';
+    instructionText.textContent = 'Look at the word, then type it below';
+  } else if(shouldShowHint()){
+    stageLabel.textContent = `🧠 Write from Memory (${phaseNum}/${phaseTotal})`;
+    wordDisplay.innerHTML = `<span style="color:var(--muted);">${word[0]}${' _'.repeat(word.length-1)}</span>`;
+    wordDisplay.style.visibility = 'visible';
+    instructionText.textContent = 'Here\'s a hint — the first letter! Try again';
+  } else {
+    stageLabel.textContent = `🧠 Write from Memory (${phaseNum}/${phaseTotal})`;
+    wordDisplay.textContent = '';
+    wordDisplay.style.visibility = 'hidden';
+    instructionText.textContent = 'Listen to the sound, then type it without looking';
+  }
+  renderDots();
+  setTimeout(()=>speak(word), 300);
+  document.getElementById('answerInput').focus();
+}
+
+function renderDots(){
+  const dotsDiv = document.getElementById('dots');
+  dotsDiv.innerHTML = '';
+  const arr = currentAttemptsForWord();
+  for(let i=0;i<totalReps;i++){
+    const d = document.createElement('div');
+    d.className = (arr[i] === true) ? 'dot done-good' : (arr[i] === false ? 'dot done-bad' : 'dot');
+    if(i === lookReps && lookReps > 0 && recallReps > 0){
+      d.style.marginLeft = '10px';
+    }
+    dotsDiv.appendChild(d);
+  }
+}
+
+let attemptHistory = {}; // word -> array of true/false
+function currentAttemptsForWord(){
+  if(!attemptHistory[practiceWordList[wordIdx]]) attemptHistory[practiceWordList[wordIdx]] = [];
+  return attemptHistory[practiceWordList[wordIdx]];
+}
+
+function speakCurrent(){
+  speak(practiceWordList[wordIdx]);
+}
+
+function speakSpelled(){
+  const word = practiceWordList[wordIdx];
+  try{
+    window.speechSynthesis.cancel();
+    const letters = word.split('');
+    let i = 0;
+    function next(){
+      if(i >= letters.length) return;
+      const u = new SpeechSynthesisUtterance(letters[i]);
+      u.lang = 'en-US';
+      u.rate = 0.7;
+      u.onend = ()=>{ i++; setTimeout(next, 180); };
+      window.speechSynthesis.speak(u);
+    }
+    next();
+  }catch(e){ /* speech not supported, silently ignore */ }
+}
+
+function buildDiffHTML(target, attempt){
+  const maxLen = Math.max(target.length, attempt.length);
+  let html = '';
+  for(let i=0;i<maxLen;i++){
+    const a = attempt[i] || '_';
+    const match = attempt[i] && target[i] && attempt[i].toLowerCase() === target[i].toLowerCase();
+    const color = match ? 'var(--good)' : 'var(--bad)';
+    html += `<span style="color:${color};">${a}</span>`;
+  }
+  return html;
+}
+
+let isChecking = false;
+
+function checkAnswer(){
+  if(isChecking) return;
+  const val = document.getElementById('answerInput').value.trim();
+  const fb = document.getElementById('feedback');
+  if(val === ''){
+    fb.textContent = '✏️ Please type something first!';
+    fb.className = 'feedback bad';
+    document.getElementById('diffRow').innerHTML = '';
+    document.getElementById('correctSpelling').textContent = '';
+    document.getElementById('answerInput').focus();
+    return;
+  }
+  isChecking = true;
+  const target = practiceWordList[wordIdx];
+  const correct = val.toLowerCase() === target.toLowerCase();
+  const diffRow = document.getElementById('diffRow');
+  const correctSpelling = document.getElementById('correctSpelling');
+  const hist = currentAttemptsForWord();
+  hist[attemptIdx] = correct;
+  if(correct){
+    results[target].good++;
+    streak++;
+    const msgs = ['✔ Correct!', '🎉 Great job!', '🌟 Super!', '🔥 On fire!', '👏 Wonderful!'];
+    fb.textContent = streak >= 3 ? msgs[Math.min(streak-1, msgs.length-1)] : msgs[0];
+    fb.className = 'feedback good';
+    diffRow.innerHTML = '';
+    correctSpelling.textContent = '';
+    updateStreakLabel();
+    renderDots();
+    setTimeout(nextStep, 1000);
+  } else {
+    results[target].bad++;
+    streak = 0;
+    fb.textContent = '✘ Not quite — here\'s the difference:';
+    fb.className = 'feedback bad';
+    diffRow.innerHTML = buildDiffHTML(target, val);
+    correctSpelling.textContent = `Correct spelling: ${target}`;
+    updateStreakLabel();
+    renderDots();
+    document.getElementById('checkBtn').classList.add('hidden');
+    document.getElementById('nextBtn').classList.remove('hidden');
+  }
+}
+
+function goToNext(){
+  document.getElementById('checkBtn').classList.remove('hidden');
+  document.getElementById('nextBtn').classList.add('hidden');
+  nextStep();
+}
+
+function nextStep(){
+  attemptIdx++;
+  if(attemptIdx >= totalReps){
+    attemptIdx = 0;
+    wordIdx++;
+  }
+  if(wordIdx >= practiceWordList.length){
+    showResults();
+  } else {
+    loadAttempt();
+  }
+}
+
+function showResults(){
+  document.getElementById('practiceCard').classList.add('hidden');
+  document.getElementById('doneCard').classList.remove('hidden');
+  let totalGood = 0, totalAll = 0;
+  let lines = '';
+  const weak = [];
+  practiceWordList.forEach(w=>{
+    const r = results[w];
+    totalGood += r.good; totalAll += (r.good + r.bad);
+    lines += `<div style="margin:4px 0;"><strong>${w}</strong>: ${r.good}/${totalReps} correct</div>`;
+    if(r.bad > 0) weak.push(w);
+  });
+  document.getElementById('finalScore').textContent = `🎉 ${totalGood} / ${totalAll} correct`;
+  document.getElementById('reviewList').innerHTML = lines;
+  const weakSection = document.getElementById('weakWordsSection');
+  if(weak.length > 0){
+    weakSection.classList.remove('hidden');
+    document.getElementById('weakWordsList').textContent = weak.join(', ');
+  } else {
+    weakSection.classList.add('hidden');
+  }
+  saveSessionToHistory(totalGood, totalAll);
+}
+
+function saveSessionToHistory(totalGood, totalAll){
+  try{
+    const record = {
+      date: new Date().toISOString(),
+      totalGood, totalAll,
+      words: practiceWordList.map(w => ({ word: w, good: results[w].good, bad: results[w].bad }))
+    };
+    const raw = localStorage.getItem('spellingPracticeHistory');
+    const history = raw ? JSON.parse(raw) : [];
+    history.push(record);
+    localStorage.setItem('spellingPracticeHistory', JSON.stringify(history));
+  }catch(e){ /* storage unavailable, silently ignore */ }
+}
+
+function loadHistory(){
+  try{
+    const raw = localStorage.getItem('spellingPracticeHistory');
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){ return []; }
+}
+
+function showDashboard(){
+  document.getElementById('setupCard').classList.add('hidden');
+  document.getElementById('dashboardCard').classList.remove('hidden');
+  renderDashboard();
+}
+
+function showDashboardFromDone(){
+  document.getElementById('doneCard').classList.add('hidden');
+  document.getElementById('dashboardCard').classList.remove('hidden');
+  renderDashboard();
+}
+
+function hideDashboard(){
+  document.getElementById('dashboardCard').classList.add('hidden');
+  document.getElementById('setupCard').classList.remove('hidden');
+}
+
+function clearHistory(){
+  if(!confirm('Clear all saved practice history? This cannot be undone.')) return;
+  try{ localStorage.removeItem('spellingPracticeHistory'); }catch(e){}
+  renderDashboard();
+}
+
+function renderDashboard(){
+  const history = loadHistory();
+  const overview = document.getElementById('dashboardOverview');
+  const wordsDiv = document.getElementById('dashboardWords');
+  const sessionsDiv = document.getElementById('dashboardSessions');
+
+  if(history.length === 0){
+    overview.innerHTML = '<p style="color:var(--muted);">No practice sessions yet. Complete a practice round to see your report here!</p>';
+    wordsDiv.innerHTML = '';
+    sessionsDiv.innerHTML = '';
+    return;
+  }
+
+  let totalGood = 0, totalAll = 0;
+  const wordStats = {}; // word -> {good, bad}
+  history.forEach(s=>{
+    totalGood += s.totalGood; totalAll += s.totalAll;
+    s.words.forEach(w=>{
+      if(!wordStats[w.word]) wordStats[w.word] = {good:0, bad:0};
+      wordStats[w.word].good += w.good;
+      wordStats[w.word].bad += w.bad;
+    });
+  });
+  const overallPct = totalAll > 0 ? Math.round((totalGood/totalAll)*100) : 0;
+  overview.innerHTML = `
+    <div style="font-size:1.3rem; font-weight:800;">${history.length} session${history.length>1?'s':''} completed</div>
+    <div style="color:var(--muted); margin-top:4px;">${totalGood} / ${totalAll} correct overall (${overallPct}%)</div>
+  `;
+
+  const wordArr = Object.keys(wordStats).map(w=>{
+    const s = wordStats[w];
+    const total = s.good + s.bad;
+    const pct = total > 0 ? Math.round((s.good/total)*100) : 0;
+    return {word:w, total, pct};
+  }).sort((a,b)=>a.pct-b.pct);
+
+  let wordsHTML = '<h3 style="margin-bottom:8px;">Words (weakest first)</h3>';
+  wordArr.forEach(w=>{
+    const color = w.pct >= 80 ? 'var(--good)' : (w.pct >= 50 ? '#f0a500' : 'var(--bad)');
+    wordsHTML += `<div class="report-row"><span class="w">${w.word}</span><span class="pct" style="color:${color};">${w.pct}% (${w.total} tries)</span></div>`;
+  });
+  wordsDiv.innerHTML = wordsHTML;
+
+  let sessionsHTML = '<h3 style="margin-bottom:8px;">Recent Sessions</h3>';
+  history.slice(-5).reverse().forEach(s=>{
+    const d = new Date(s.date);
+    const dateStr = d.toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+    const pct = s.totalAll > 0 ? Math.round((s.totalGood/s.totalAll)*100) : 0;
+    sessionsHTML += `<div class="session-row"><div class="d">${dateStr}</div><div>${s.words.map(w=>w.word).join(', ')} — <strong>${s.totalGood}/${s.totalAll} (${pct}%)</strong></div></div>`;
+  });
+  sessionsDiv.innerHTML = sessionsHTML;
+}
+
+function resetAll(){
+  document.getElementById('doneCard').classList.add('hidden');
+  document.getElementById('setupCard').classList.remove('hidden');
+  document.getElementById('answerInput').value='';
+}
+
+let lastTypedValue = '';
+function speakTypedLetter(ch){
+  try{
+    const u = new SpeechSynthesisUtterance(ch);
+    u.lang = 'en-US';
+    u.rate = 0.9;
+    window.speechSynthesis.speak(u);
+  }catch(e){ /* speech not supported, silently ignore */ }
+}
+
+document.getElementById('answerInput').addEventListener('input', function(e){
+  const val = e.target.value;
+  if(val.length > lastTypedValue.length){
+    const newChar = val[val.length - 1];
+    if(newChar && newChar.trim() !== ''){
+      speakTypedLetter(newChar);
+    }
+  }
+  lastTypedValue = val;
+});
+
+document.getElementById('answerInput')?.addEventListener?.('keydown', function(e){
+  if(e.key === 'Enter'){ e.preventDefault(); checkAnswer(); }
+});
+</script>
+</body>
+</html>
