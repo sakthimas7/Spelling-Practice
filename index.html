@@ -362,6 +362,20 @@
     display:flex; gap:10px; justify-content:center;
   }
   .modal-actions button{ flex:1; padding:12px 10px; font-size:0.95rem; }
+
+  /* Mobile Responsive Tweaks */
+  @media (max-width: 480px){
+    .wrap{ padding: 12px 10px 24px; }
+    .card{ padding: 16px 12px; border-radius: 16px; margin-bottom: 12px; }
+    h1{ font-size: 1.35rem; }
+    p.sub{ margin: 4px 0 16px; font-size: 0.88rem; }
+    .practice-word{ font-size: 1.75rem; margin: 6px 0; min-height: 2.1rem; }
+    .dots{ margin: 8px 0 12px; }
+    .speak-btn{ width: 50px; height: 50px; font-size: 1.25rem; }
+    .virtual-keyboard{ margin: 10px 0 8px; padding: 8px 4px 6px; }
+    .vk-key{ height: 38px; font-size: 1.05rem; }
+    .btn-main{ padding: 13px; font-size: 1rem; }
+  }
 </style>
 </head>
 <body>
@@ -550,6 +564,16 @@ function loadSavedOptions(){
   updateLayoutOptionVisibility();
 }
 
+function syncInputMode(){
+  const answerInput = document.getElementById('answerInput');
+  if(!answerInput) return;
+  if(appOptions.keyboardEnabled && !vkCollapsed){
+    answerInput.setAttribute('inputmode', 'none');
+  } else {
+    answerInput.removeAttribute('inputmode');
+  }
+}
+
 function saveOptions(){
   const optKb = document.getElementById('optKeyboard');
   const optAnim = document.getElementById('optAnimations');
@@ -564,6 +588,7 @@ function saveOptions(){
   
   updateLayoutOptionVisibility();
   renderVirtualKeyboard();
+  syncInputMode();
 }
 
 function updateLayoutOptionVisibility(){
@@ -1041,6 +1066,7 @@ function loadAttempt(){
   }
   renderDots();
   renderVirtualKeyboard();
+  syncInputMode();
   setTimeout(()=>speak(word), 300);
   answerInput.focus();
 }
@@ -1335,6 +1361,17 @@ function resetAll(){
 
 function toggleVkCollapse(){
   vkCollapsed = !vkCollapsed;
+  const answerInput = document.getElementById('answerInput');
+  if(answerInput){
+    if(vkCollapsed){
+      answerInput.removeAttribute('inputmode');
+      answerInput.focus();
+    } else {
+      answerInput.setAttribute('inputmode', 'none');
+      answerInput.blur();
+      setTimeout(()=>answerInput.focus(), 60);
+    }
+  }
   renderVirtualKeyboard();
 }
 
@@ -1394,6 +1431,7 @@ function renderVirtualKeyboard(){
   
   if(!appOptions.keyboardEnabled){
     vk.classList.add('hidden');
+    syncInputMode();
     return;
   }
   vk.classList.remove('hidden');
@@ -1403,17 +1441,26 @@ function renderVirtualKeyboard(){
 
   let headerHTML = `
     <div class="vk-header">
-      <span>⌨️ ${isQwerty ? 'QWERTY' : 'ABC'} Keyboard</span>
+      <span>⌨️ ${isQwerty ? 'QWERTY' : 'ABC'}</span>
       <div class="vk-controls">
-        <button type="button" class="vk-tool-btn ${isCaps ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="toggleVkCaps()">${isCaps ? 'aA (Caps)' : 'aa'}</button>
-        <button type="button" class="vk-tool-btn" onmousedown="event.preventDefault();" onclick="toggleVkLayout()">${isQwerty ? 'Switch: ABC' : 'Switch: QWERTY'}</button>
-        <button type="button" class="vk-tool-btn" onmousedown="event.preventDefault();" onclick="toggleVkCollapse()">${vkCollapsed ? 'Show ▴' : 'Hide ▾'}</button>
+        <button type="button" class="vk-tool-btn ${isCaps ? 'active' : ''}" onpointerdown="event.preventDefault();" onmousedown="event.preventDefault();" onclick="toggleVkCaps()">${isCaps ? 'aA (Caps)' : 'aa'}</button>
+        <button type="button" class="vk-tool-btn" onpointerdown="event.preventDefault();" onmousedown="event.preventDefault();" onclick="toggleVkLayout()">${isQwerty ? 'Switch: ABC' : 'Switch: QWERTY'}</button>
+        <button type="button" class="vk-tool-btn" onpointerdown="event.preventDefault();" onmousedown="event.preventDefault();" onclick="toggleVkCollapse()" title="Switch to mobile phone keyboard">${vkCollapsed ? '⌨️ In-App' : '📱 Phone Keyboard'}</button>
       </div>
     </div>
   `;
 
   if(vkCollapsed){
+    headerHTML = `
+      <div class="vk-header" style="border-bottom:none; margin-bottom:0;">
+        <span>⌨️ In-App Keyboard Hidden</span>
+        <div class="vk-controls">
+          <button type="button" class="vk-tool-btn active" onpointerdown="event.preventDefault();" onmousedown="event.preventDefault();" onclick="toggleVkCollapse()">⌨️ Open In-App Keyboard</button>
+        </div>
+      </div>
+    `;
     vk.innerHTML = headerHTML;
+    syncInputMode();
     return;
   }
 
@@ -1438,7 +1485,7 @@ function renderVirtualKeyboard(){
     bodyHTML += '<div class="vk-row">';
     r.forEach(k => {
       const displayChar = isCaps ? k.toUpperCase() : k.toLowerCase();
-      bodyHTML += `<button type="button" class="vk-key" onmousedown="event.preventDefault();" onclick="handleVkChar('${displayChar}');">${displayChar}</button>`;
+      bodyHTML += `<button type="button" class="vk-key" onpointerdown="event.preventDefault();" onmousedown="event.preventDefault();" onclick="handleVkChar('${displayChar}');">${displayChar}</button>`;
     });
     bodyHTML += '</div>';
   });
@@ -1446,13 +1493,14 @@ function renderVirtualKeyboard(){
   // Action row (Clear, Space, Backspace)
   bodyHTML += `
     <div class="vk-row" style="margin-top:6px;">
-      <button type="button" class="vk-key special key-clear" onmousedown="event.preventDefault();" onclick="handleVkClear();" title="Clear input">🧹 Clear</button>
-      <button type="button" class="vk-key special key-space" onmousedown="event.preventDefault();" onclick="handleVkChar(' ');">␣ Space</button>
-      <button type="button" class="vk-key special key-backspace" onmousedown="event.preventDefault();" onclick="handleVkBackspace();" title="Backspace">⌫ Delete</button>
+      <button type="button" class="vk-key special key-clear" onpointerdown="event.preventDefault();" onmousedown="event.preventDefault();" onclick="handleVkClear();" title="Clear input">🧹 Clear</button>
+      <button type="button" class="vk-key special key-space" onpointerdown="event.preventDefault();" onmousedown="event.preventDefault();" onclick="handleVkChar(' ');">␣ Space</button>
+      <button type="button" class="vk-key special key-backspace" onpointerdown="event.preventDefault();" onmousedown="event.preventDefault();" onclick="handleVkBackspace();" title="Backspace">⌫ Delete</button>
     </div>
   `;
 
   vk.innerHTML = headerHTML + bodyHTML;
+  syncInputMode();
 }
 
 let lastTypedValue = '';
@@ -1483,6 +1531,7 @@ document.getElementById('answerInput')?.addEventListener?.('keydown', function(e
 // Initial load
 loadSavedOptions();
 updateLayoutOptionVisibility();
+syncInputMode();
 </script>
 </body>
 </html>
